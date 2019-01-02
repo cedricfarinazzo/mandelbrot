@@ -98,8 +98,8 @@ class MandelbrotMultiThread(Mandelbrot):
                 y = int((j - self.A[1]) * self.coeff * zoom)
 
                 try:
-                    self.image.putpixel((x, y), (color, (IdThread * color) % 255, color))
-                    #self.image.putpixel((x, y), (color, color, color))
+                    #self.image.putpixel((x, y), (color, (IdThread * color) % 255, color))
+                    self.image.putpixel((x, y), (color, color, color))
                 except:
                     pass
 
