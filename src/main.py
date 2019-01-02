@@ -16,17 +16,31 @@ m.display()
 """
 
 
-
 # Multi Thread
 
 A = (-2.1, -1.5)
 B = (1.3, 1.6)
 precision = 0.000750
 
-m = mandelbrot.MandelpbrotMultiThread(A, B, precision)
+m = mandelbrot.MandelbrotMultiThread(A, B, precision)
 
 m.generate(100, 4)
 
 print("Drawing")
 m.display()
 
+
+"""
+# OpenCL
+
+A = (-2.1, -1.5)
+B = (1.3, 1.6)
+precision = 0.000750
+
+m = mandelbrot.MandelbrotOpenCV(A, B, precision)
+
+m.generate(100, 4)
+
+print("Drawing")
+m.display()
+"""

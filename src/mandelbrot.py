@@ -1,6 +1,6 @@
 from PIL import Image
 import complex
-import sys, threading, multiprocessing
+import threading, multiprocessing
 
 
 def get_color(generation, n):
@@ -99,7 +99,7 @@ class MandelbrotMultiThread(Mandelbrot):
 
                 try:
                     self.image.putpixel((x, y), (color, (IdThread * color) % 255, color))
-                    self.image.putpixel((x, y), (color, color, color))
+                    #self.image.putpixel((x, y), (color, color, color))
                 except:
                     pass
 
@@ -150,3 +150,19 @@ class MandelbrotMultiThread(Mandelbrot):
 
     def display(self):
         Mandelbrot.display(self)
+
+
+"""
+import numpy as np
+import pyopencl as cl
+
+
+class MandelbrotOpenCV(Mandelbrot):
+
+    def __init__(self, A, B, precision):
+        Mandelbrot.__init__(self, A, B, precision)
+
+    def generate(self, generation, threshold, zoom=1):
+        pass
+
+"""
