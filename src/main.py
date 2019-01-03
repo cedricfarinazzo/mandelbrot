@@ -20,7 +20,7 @@ m.display()
 
 A = (-2.1, -1.5)
 B = (1.3, 1.6)
-precision = 0.000750
+precision = 0.0003500
 
 m = mandelbrot.MandelbrotMultiThread(A, B, precision)
 

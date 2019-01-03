@@ -2,3 +2,6 @@
 __pycache__
 *.exe
 *.o
+mandelbrot
+main.build
+main.dist

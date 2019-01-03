@@ -130,6 +130,7 @@ class MandelbrotMultiThread(Mandelbrot):
             args = ((start, self.A[1]), (round(start + wPerThread, 6), self.B[1]), generation, threshold, id, zoom)
             print(args)
             th = threading.Thread(target=self.compute, args=args)
+            th.setDaemon(True)
             threads.append(th)
             start += wPerThread
             start = round(start, 6)
