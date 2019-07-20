@@ -1,6 +1,7 @@
 from PIL import Image
 import complex
-import threading, multiprocessing
+import threading
+import multiprocessing
 
 
 def get_color(generation, n):
@@ -18,8 +19,10 @@ class Mandelbrot:
     nbpixel = 0
 
     def __init__(self, A, B, precision):
-        if precision is 0:
+        if precision == 0:
             raise ZeroDivisionError()
+        if precision < 0:
+            raise Exception("invalid argument precision")
         self.A = A
         self.B = B
         self.w = B[0] - A[0]
@@ -57,7 +60,7 @@ class Mandelbrot:
 
                 try:
                     self.image.putpixel((x, y), (color, color, color))
-                except:
+                except Exception:
                     pass
 
                 j += self.precision
@@ -69,8 +72,9 @@ class Mandelbrot:
     def display(self):
         if self.image is None:
             return
-        self.image.save("mandelbrot.png", quality=100)
-        self.image.show()
+        pix_precision = int(1 / self.precision)
+        self.image.save("mandelbrot-%d.png" % (pix_precision), quality=100)
+        # self.image.show()
         print("Done")
 
 
@@ -87,6 +91,10 @@ class MandelbrotMultiThread(Mandelbrot):
         while i < B[0]:
             j = A[1]
             while j < B[1]:
+                if j < -self.precision:
+                    self.globalcount += 1
+                    j += self.precision
+                    continue
                 c = complex.Complex()
                 c.re = i
                 c.im = j
@@ -97,16 +105,21 @@ class MandelbrotMultiThread(Mandelbrot):
                 x = int((i - self.A[0]) * self.coeff * zoom)
                 y = int((j - self.A[1]) * self.coeff * zoom)
 
+                y_n = int((-j - self.A[1]) * self.coeff * zoom)
+
                 try:
-                    #self.image.putpixel((x, y), (color, (IdThread * color) % 255, color))
                     self.image.putpixel((x, y), (color, color, color))
-                except:
+                    self.image.putpixel((x, y_n), (color, color, color))
+                except Exception:
                     pass
 
                 self.globalcount += 1
                 j += self.precision
-            print(str(int(self.globalcount / self.nbpixel * 100)) + "%  |   " + str(self.globalcount) + " / " + str(self.nbpixel))
+            status = self.globalcount / self.nbpixel * 100
+            print("%0.1f %% | %d / %d \r" %
+                  (status, self.globalcount, self.nbpixel))
             i += self.precision
+        print()
         print("Thread N°" + str(IdThread) + " done !")
 
     def generate(self, generation, threshold, zoom=1):
@@ -127,7 +140,15 @@ class MandelbrotMultiThread(Mandelbrot):
         start = self.A[0]
         id = 1
         while start < self.B[0]:
-            args = ((start, self.A[1]), (round(start + wPerThread, 6), self.B[1]), generation, threshold, id, zoom)
+            args = (
+                    (start, self.A[1]),
+                    (round(start + wPerThread, 6),
+                        self.B[1]),
+                    generation,
+                    threshold,
+                    id,
+                    zoom
+                )
             print(args)
             th = threading.Thread(target=self.compute, args=args)
             th.setDaemon(True)
@@ -138,11 +159,6 @@ class MandelbrotMultiThread(Mandelbrot):
 
         for th in threads:
             th.start()
-
-
-        #COMPUTE RESTE
-        #self.compute((start - wPerThread, self.A[1]), (start, self.B[1]), generation, threshold, id, zoom)
-        #print(((start - wPerThread, self.A[1]), (start, self.B[1]), generation, threshold, id, zoom))
 
         for th in threads:
             th.join()

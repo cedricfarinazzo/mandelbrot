@@ -1,6 +1,3 @@
-import math
-
-
 class Complex:
 
     re = 0

@@ -1,46 +1,50 @@
 import mandelbrot
 
-"""
 
-# Single Thread
+def main():
+    """
 
-A = (-1.25, -0.75)
-B = (-0.4, 0.75)
-precision = 0.0005
+    # Single Thread
 
-m = mandelbrot.Mandelbrot(A, B, precision)
-m.generate(100, 4)
+    A = (-1.25, -0.75)
+    B = (-0.4, 0.75)
+    precision = 0.0005
 
-print("Drawing")
-m.display()
-"""
+    m = mandelbrot.Mandelbrot(A, B, precision)
+    m.generate(100, 4)
+
+    print("Drawing")
+    m.display()
+    """
+
+    # Multi Thread
+
+    A = (-2.1, -1.5)
+    B = (1.3, 1.6)
+    precision = 0.000200
+
+    m = mandelbrot.MandelbrotMultiThread(A, B, precision)
+
+    m.generate(100, 4)
+
+    print("Drawing")
+    m.display()
+
+    """
+    # OpenCL
+
+    A = (-2.1, -1.5)
+    B = (1.3, 1.6)
+    precision = 0.000750
+
+    m = mandelbrot.MandelbrotOpenCV(A, B, precision)
+
+    m.generate(100, 4)
+
+    print("Drawing")
+    m.display()
+    """
 
 
-# Multi Thread
-
-A = (-2.1, -1.5)
-B = (1.3, 1.6)
-precision = 0.0003500
-
-m = mandelbrot.MandelbrotMultiThread(A, B, precision)
-
-m.generate(100, 4)
-
-print("Drawing")
-m.display()
-
-
-"""
-# OpenCL
-
-A = (-2.1, -1.5)
-B = (1.3, 1.6)
-precision = 0.000750
-
-m = mandelbrot.MandelbrotOpenCV(A, B, precision)
-
-m.generate(100, 4)
-
-print("Drawing")
-m.display()
-"""
+if __name__ == '__main__':
+    main()
