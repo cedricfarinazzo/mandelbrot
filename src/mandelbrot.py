@@ -1,7 +1,8 @@
+from sys import stdout
 from PIL import Image
-import complex
 import threading
 import multiprocessing
+import complex
 
 
 def get_color(generation, n):
@@ -69,7 +70,7 @@ class Mandelbrot:
             i += self.precision
         print("100%")
 
-    def display(self):
+    def save(self):
         if self.image is None:
             return
         pix_precision = int(1 / self.precision)
@@ -115,11 +116,14 @@ class MandelbrotMultiThread(Mandelbrot):
 
                 self.globalcount += 1
                 j += self.precision
+
             status = self.globalcount / self.nbpixel * 100
-            print("%0.1f %% | %d / %d \r" %
-                  (status, self.globalcount, self.nbpixel))
+            stdout.write("\r%0.1f %% | %d / %d " %
+                         (status, self.globalcount, self.nbpixel))
+            stdout.flush()
+
             i += self.precision
-        print()
+        stdout.write("\n")  # move the cursor to the next line
         print("Thread N°" + str(IdThread) + " done !")
 
     def generate(self, generation, threshold, zoom=1):
@@ -149,7 +153,6 @@ class MandelbrotMultiThread(Mandelbrot):
                     id,
                     zoom
                 )
-            print(args)
             th = threading.Thread(target=self.compute, args=args)
             th.setDaemon(True)
             threads.append(th)
@@ -165,8 +168,8 @@ class MandelbrotMultiThread(Mandelbrot):
 
         print("Done")
 
-    def display(self):
-        Mandelbrot.display(self)
+    def save(self):
+        super(MandelbrotMultiThread, self).save()
 
 
 """

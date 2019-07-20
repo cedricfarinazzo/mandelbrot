@@ -28,7 +28,7 @@ def main():
     m.generate(100, 4)
 
     print("Drawing")
-    m.display()
+    m.save()
 
     """
     # OpenCL
