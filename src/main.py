@@ -25,7 +25,7 @@ def main():
 
     m = mandelbrot.MandelbrotMultiThread(A, B, precision)
 
-    m.generate(100, 4)
+    m.generate(500, 4)
 
     print("Drawing")
     m.save()
