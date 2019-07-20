@@ -21,7 +21,7 @@ def main():
 
     A = (-2.1, -1.5)
     B = (1.3, 1.6)
-    precision = 0.000200
+    precision = 0.000100
 
     m = mandelbrot.MandelbrotMultiThread(A, B, precision)
 

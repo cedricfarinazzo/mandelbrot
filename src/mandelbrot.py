@@ -1,12 +1,16 @@
 from sys import stdout
+import time
 from PIL import Image
 import threading
 import multiprocessing
 import complex
 
 
-def get_color(generation, n):
-    return int((n * 255) / generation) % 255
+def get_color(generation, n, white_color=False):
+    if white_color:
+        return 255 - (int((n * 255) / generation) % 255)
+    else:
+        return int((n * 255) / generation) % 255
 
 
 class Mandelbrot:
@@ -83,10 +87,11 @@ class MandelbrotMultiThread(Mandelbrot):
     globalcount = 0
 
     def __init__(self, A, B, precision):
-        Mandelbrot.__init__(self, A, B, precision)
+        super(MandelbrotMultiThread, self).__init__(A, B, precision)
         self.globalcount = 0
 
-    def compute(self, A, B, generation, threshold, IdThread, zoom=1):
+    def compute(self, A, B, generation, threshold, IdThread, white_color=False,
+                zoom=1):
 
         i = A[0]
         while i < B[0]:
@@ -101,7 +106,7 @@ class MandelbrotMultiThread(Mandelbrot):
                 c.im = j
 
                 n = c.diverge(generation, threshold)
-                color = get_color(generation, n)
+                color = get_color(generation, n, white_color)
 
                 x = int((i - self.A[0]) * self.coeff * zoom)
                 y = int((j - self.A[1]) * self.coeff * zoom)
@@ -126,7 +131,8 @@ class MandelbrotMultiThread(Mandelbrot):
         stdout.write("\n")  # move the cursor to the next line
         print("Thread N°" + str(IdThread) + " done !")
 
-    def generate(self, generation, threshold, zoom=1):
+    def generate(self, generation, threshold, white_color=False, zoom=1):
+        start_time = time.time()
         self.globalcount = 0
 
         dimW = int(self.w * self.coeff)
@@ -151,6 +157,7 @@ class MandelbrotMultiThread(Mandelbrot):
                     generation,
                     threshold,
                     id,
+                    white_color,
                     zoom
                 )
             th = threading.Thread(target=self.compute, args=args)
@@ -160,13 +167,16 @@ class MandelbrotMultiThread(Mandelbrot):
             start = round(start, 6)
             id += 1
 
+        print("Number of pixel to compute: ", self.nbpixel, "\n")
+
         for th in threads:
             th.start()
 
         for th in threads:
             th.join()
 
-        print("Done")
+        compute_time = time.time() - start_time
+        print("Done in %.6f s" % (compute_time))
 
     def save(self):
         super(MandelbrotMultiThread, self).save()
